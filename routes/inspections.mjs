@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
     }
   });
   
-// POST - CREATE ROUTE
+// POST 
 router.post("/", async (req, res) => {
     const { body } = req;
   
@@ -48,6 +48,50 @@ router.post("/", async (req, res) => {
       res.json(result.ops[0]);
     } catch (error) {
       console.error("Error creating inspection:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // PATCH
+router.patch("/:id", async (req, res) => {
+    const { id } = req.params;
+    const { body } = req;
+  
+    try {
+      const db = await connectDB();
+      const result = await db.collection("inspections").updateOne(
+        { _id: ObjectId(id) },
+        { $set: body }
+      );
+  
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ error: "Inspection not found" });
+      }
+  
+      // Respond with the updated inspection
+      res.json({ message: "Inspection updated successfully" });
+    } catch (error) {
+      console.error("Error updating inspection:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // DELETE
+router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const db = await connectDB();
+      const result = await db.collection("inspections").deleteOne({ _id: ObjectId(id) });
+  
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ error: "Inspection not found" });
+      }
+  
+      // Respond with a success message
+      res.json({ message: "Inspection deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting inspection:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
