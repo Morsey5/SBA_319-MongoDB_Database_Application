@@ -5,21 +5,20 @@ const app = express()
 const PORT = process.env.PORT || 3000;
 
 
+// Middleware to parse JSON
+app.use(express.json());
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
-  });
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
 
-  app.use('/inspections', inspectionsRouter);
-
-  
+// Use the middleware to set up your routes
 Object.keys(routes).forEach((route) => {
-    app.use(`/${route}`, routes[route]);
-  });
+  app.use(`/${route}`, routes[route]);
+});
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-  
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

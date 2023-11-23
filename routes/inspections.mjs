@@ -36,6 +36,20 @@ router.get("/", async (req, res) => {
     }
   });
   
-
+// POST - CREATE ROUTE
+router.post("/", async (req, res) => {
+    const { body } = req;
+  
+    try {
+      const db = await connectDB();
+      const result = await db.collection("inspections").insertOne(body);
+  
+      // Respond with the newly created inspection
+      res.json(result.ops[0]);
+    } catch (error) {
+      console.error("Error creating inspection:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 
 export default router;
